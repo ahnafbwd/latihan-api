@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Aplikasi AR Kampus",
+    "description": "Aplikasi Augmented Reality untuk pengenalan kampus.",
+    "link": "https://github.com/username/ar-campus"
+  },
+  {
+    "title": "Website UMKM",
+    "description": "Sistem e-commerce sederhana untuk UMKM.",
+    "link": "https://github.com/username/umkm-ecommerce"
+  },
+  {
+    "title": "Rekomendasi Wisata",
+    "description": "Website rekomendasi wisata menggunakan metode SAW.",
+    "link": "https://github.com/username/wisata-recommendation"
+  }
+]

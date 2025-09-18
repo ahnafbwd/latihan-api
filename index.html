@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portofolio Saya</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+    }
+    .project {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .project h2 {
+      margin: 0 0 10px 0;
+    }
+    .project a {
+      color: #007acc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Portofolio Saya</h1>
+  <div id="projects"></div>
+
+  <script>
+    async function loadProjects() {
+      try {
+        const response = await fetch("projects.json"); // ambil file json
+        const projects = await response.json();
+
+        const container = document.getElementById("projects");
+        projects.forEach(p => {
+          const div = document.createElement("div");
+          div.className = "project";
+          div.innerHTML = `
+            <h2>${p.title}</h2>
+            <p>${p.description}</p>
+            <a href="${p.link}" target="_blank">Lihat Project</a>
+          `;
+          container.appendChild(div);
+        });
+      } catch (error) {
+        console.error("Gagal memuat projects.json", error);
+      }
+    }
+
+    loadProjects();
+  </script>
+</body>
+</html>
