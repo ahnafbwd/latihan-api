@@ -119,7 +119,7 @@
       "github": "#"
     },
     {
-      "id": 7,
+      "id": 8,
       "title": "Mighty Indonesia",
       "category": "web",
       "categoryLabel": "Web Application",
@@ -127,9 +127,9 @@
       "technologies": ["HTML", "CSS", "JavaScript", "PHP", "MySQL", "WordPress"],
       "description": "Business profile web platform for Mighty Indonesia.",
       "features": [
-        "Company profile showcase",
-        "Product catalog",
-        "Contact management"
+        "Inventory management",
+        "Sales tracking and analytics",
+        "Financial reporting"
       ],
       "status": "Completed",
       "year": "2023",
@@ -138,7 +138,7 @@
       "github": "#"
     },
     {
-      "id": 8,
+      "id": 9,
       "title": "Kaba Arabic Learning",
       "category": "web",
       "categoryLabel": "Web Application",
@@ -146,9 +146,9 @@
       "technologies": ["Laravel", "Bootstrap", "JavaScript", "PHP", "MySQL"],
       "description": "Web E-learning platform for Arabic language course.",
       "features": [
-        "Super Admin dashboard",
-        "Teacher management",
-        "Student learning portal"
+        "Super Admin",
+        "Teacher dashboard",
+        "Student dashboard"
       ],
       "status": "Completed",
       "year": "2023",

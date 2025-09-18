@@ -10,13 +10,154 @@ const EMAILJS_CONFIG = {
 // Project Data Loading
 async function loadProjects() {
     try {
-        const response = await fetch('projects.json');
-        const data = await response.json();
+        console.log('Fetching projects from API...');
+        const response = await fetch('https://ahnafbwd.github.io/latihan-api/projects.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const text = await response.text();
+        console.log('Raw API response:', text.substring(0, 200) + '...');
+        
+        const data = JSON.parse(text);
+        console.log('Projects loaded successfully from API:', data);
+        
+        // Validasi struktur data
+        if (!data.projects || !Array.isArray(data.projects)) {
+            throw new Error('Invalid data structure: projects array not found');
+        }
+        
         return data.projects;
     } catch (error) {
-        console.error('Error loading projects:', error);
-        return [];
+        console.error('Error loading projects from API:', error);
+        console.log('Falling back to local data...');
+        // Fallback data jika gagal load dari API
+        return getFallbackProjects();
     }
+}
+
+// Fallback project data
+function getFallbackProjects() {
+    return [
+        {
+            "id": 1,
+            "title": "Saysco",
+            "category": "mobile",
+            "categoryLabel": "Mobile App",
+            "image": "",
+            "technologies": ["Kotlin", "Python", "Node JS", "SQLite"],
+            "description": "Aplikasi Essay Scoring dengan fitur canggih untuk penilaian otomatis.",
+            "features": [
+                "Real-time essay scoring",
+                "Automated feedback generation"
+            ],
+            "status": "Completed",
+            "year": "2024",
+            "client": "Capstone Bangkit Academy Batch 2 2023",
+            "link": "#",
+            "github": "http://github.com/capstone-saysco"
+        },
+        {
+            "id": 2,
+            "title": "Dapur Bunda Catering",
+            "category": "mobile",
+            "categoryLabel": "Mobile App",
+            "image": "",
+            "technologies": ["Flutter", "REST API", "Dart"],
+            "description": "Aplikasi pemesanan menu katering bunda dengan fitur rekomendasi menu pilihan.",
+            "features": [
+                "Menu browsing and recommendation",
+                "Real-time order tracking",
+                "WhatsApp integration",
+                "Customer reviews and ratings"
+            ],
+            "status": "Completed",
+            "year": "2024",
+            "client": "Dapur Bunda",
+            "link": "#",
+            "github": "#"
+        },
+        {
+            "id": 3,
+            "title": "DiKantin",
+            "category": "mobile",
+            "categoryLabel": "Mobile App",
+            "image": "",
+            "technologies": ["Flutter", "Firebase", "Dart", "REST API", "GetX", "Provider"],
+            "description": "Mobile food ordering application for campus canteen with real-time menu updates and order tracking.",
+            "features": [
+                "Real-time menu updates and recommendation",
+                "Real-time order tracking",
+                "Digital payment system",
+                "Canteen menu management"
+            ],
+            "status": "Completed",
+            "year": "2024",
+            "client": "Campus Canteen",
+            "link": "dikantin.com",
+            "github": "#"
+        },
+        {
+            "id": 4,
+            "title": "Gassin",
+            "category": "mobile",
+            "categoryLabel": "Mobile App",
+            "image": "",
+            "technologies": ["Kotlin", "Firebase", "REST API", "SQLite"],
+            "description": "Gas delivery management app with real-time tracking, online payment, and courier management delivery for gas cylinder orders.",
+            "features": [
+                "Real-time delivery tracking",
+                "Management gas order",
+                "Management courier",
+                "Order scheduling system"
+            ],
+            "status": "Completed",
+            "year": "2023",
+            "client": "Rumah Gas",
+            "link": "#",
+            "github": "#"
+        },
+        {
+            "id": 5,
+            "title": "Caricuan UI/UX Design",
+            "category": "design",
+            "categoryLabel": "UI/UX Design",
+            "image": "",
+            "technologies": ["Figma", "Adobe XD", "Prototyping", "User Research"],
+            "description": "Comprehensive UI/UX design project with modern interface design and user experience optimization.",
+            "features": [
+                "User research and personas",
+                "Wireframing and prototyping",
+                "Responsive design system",
+                "Usability testing"
+            ],
+            "status": "Completed",
+            "year": "2024",
+            "client": "Caricuan Platform",
+            "link": "#",
+            "github": "#"
+        },
+        {
+            "id": 6,
+            "title": "Mie Custom",
+            "category": "mobile",
+            "categoryLabel": "Mobile App",
+            "image": "",
+            "technologies": ["Java", "REST API", "Crisp Chat"],
+            "description": "Custom noodle ordering app allowing customers to customize their orders with various toppings and preferences.",
+            "features": [
+                "Custom order builder",
+                "Real-time price calculation",
+                "Customer service chat realtime",
+                "Order status notifications"
+            ],
+            "status": "Completed",
+            "year": "2024",
+            "client": "Mie Custom Restaurant",
+            "link": "#",
+            "github": "#"
+        }
+    ];
 }
 
 // Function to generate technology tags
@@ -118,36 +259,73 @@ function generateProjectCard(project, index) {
 
 // Function to render projects
 async function renderProjects() {
-    const projects = await loadProjects();
     const projectsContainer = document.getElementById('projects-container');
     const viewAllBtn = document.getElementById('view-all-btn');
     
-    if (projectsContainer && projects.length > 0) {
-        // Show featured projects (first 6)
-        const featuredProjects = projects.slice(0, 6);
-        projectsContainer.innerHTML = featuredProjects.map((project, index) => 
-            generateProjectCard(project, index)
-        ).join('');
+    try {
+        console.log('Starting to load projects...');
+        const projects = await loadProjects();
+        console.log('Projects loaded:', projects.length);
         
-        // Show "View All" button if there are more projects
-        if (projects.length > 6 && viewAllBtn) {
-            viewAllBtn.classList.remove('hidden');
-            viewAllBtn.addEventListener('click', function() {
-                // Show all projects
-                projectsContainer.innerHTML = projects.map((project, index) => 
-                    generateProjectCard(project, index)
-                ).join('');
-                
-                // Hide the button after showing all
-                viewAllBtn.style.display = 'none';
-                
-                // Re-apply scroll animations for new elements
-                applyScrollAnimations();
-            });
+        if (projectsContainer && projects.length > 0) {
+            // Show featured projects (first 6)
+            const featuredProjects = projects.slice(0, 6);
+            projectsContainer.innerHTML = featuredProjects.map((project, index) => 
+                generateProjectCard(project, index)
+            ).join('');
+            
+            // Show "View All" button if there are more projects
+            if (projects.length > 6 && viewAllBtn) {
+                viewAllBtn.classList.remove('hidden');
+                viewAllBtn.addEventListener('click', function() {
+                    // Show all projects
+                    projectsContainer.innerHTML = projects.map((project, index) => 
+                        generateProjectCard(project, index)
+                    ).join('');
+                    
+                    // Hide the button after showing all
+                    viewAllBtn.style.display = 'none';
+                    
+                    // Re-apply scroll animations for new elements
+                    applyScrollAnimations();
+                });
+            }
+            
+            // Apply scroll animations
+            applyScrollAnimations();
+            console.log('Projects rendered successfully');
+        } else {
+            // Show error message if no projects
+            projectsContainer.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <div class="text-yellow-400">
+                        <svg class="w-16 h-16 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-lg">Menggunakan Data Fallback</p>
+                        <p class="text-sm mt-2">API sedang bermasalah, menampilkan data cadangan</p>
+                    </div>
+                </div>
+            `;
         }
-        
-        // Apply scroll animations
-        applyScrollAnimations();
+    } catch (error) {
+        console.error('Error in renderProjects:', error);
+        if (projectsContainer) {
+            projectsContainer.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <div class="text-red-400">
+                        <svg class="w-16 h-16 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-lg">Error Loading Projects</p>
+                        <p class="text-sm mt-2">Silakan refresh halaman atau coba lagi nanti</p>
+                        <button onclick="location.reload()" class="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm">
+                            Refresh Halaman
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
     }
 }
 
