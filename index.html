@@ -1,61 +1,678 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portofolio Saya</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f4f4f4;
-    }
-    h1 {
-      text-align: center;
-    }
-    .project {
-      background: white;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .project h2 {
-      margin: 0 0 10px 0;
-    }
-    .project a {
-      color: #007acc;
-      text-decoration: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ahnaf - Fullstack Developer | Web & Mobile Application Specialist. Lulusan D4 Teknik Informatika dengan spesialisasi Full Stack Development menggunakan Laravel, Kotlin Native, dan Flutter.">
+    <meta name="keywords" content="Fullstack Developer, Laravel, Kotlin, Flutter, Web Development, Mobile Development, Ahnaf">
+    <meta name="author" content="Ahnaf">
+    <title>Ahnaf - Fullstack Developer Portfolio</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS for animations -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .animate-on-scroll.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+        }
+    </style>
 </head>
-<body>
-  <h1>Portofolio Saya</h1>
-  <div id="projects"></div>
 
-  <script>
-    async function loadProjects() {
-      try {
-        const response = await fetch("projects.json"); // ambil file json
-        const projects = await response.json();
+<body class="bg-gray-900 text-gray-300 font-sans">
+    <!-- Header & Navigation -->
+    <header id="header" class="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="text-2xl font-bold text-white">
+                    <a href="#hero" class="hover:text-blue-400 transition-colors">AHNAF</a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="nav-link hover:text-blue-400 transition-colors">Tentang</a>
+                    <a href="#projects" class="nav-link hover:text-blue-400 transition-colors">Proyek</a>
+                    <a href="#skills" class="nav-link hover:text-blue-400 transition-colors">Keahlian</a>
+                    <a href="#journey" class="nav-link hover:text-blue-400 transition-colors">Perjalanan</a>
+                    <a href="#contact" class="nav-link hover:text-blue-400 transition-colors">Kontak</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-400 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-4">
+                    <a href="#about" class="nav-link hover:text-blue-400 transition-colors">Tentang</a>
+                    <a href="#projects" class="nav-link hover:text-blue-400 transition-colors">Proyek</a>
+                    <a href="#skills" class="nav-link hover:text-blue-400 transition-colors">Keahlian</a>
+                    <a href="#journey" class="nav-link hover:text-blue-400 transition-colors">Perjalanan</a>
+                    <a href="#contact" class="nav-link hover:text-blue-400 transition-colors">Kontak</a>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-        const container = document.getElementById("projects");
-        projects.forEach(p => {
-          const div = document.createElement("div");
-          div.className = "project";
-          div.innerHTML = `
-            <h2>${p.title}</h2>
-            <p>${p.description}</p>
-            <a href="${p.link}" target="_blank">Lihat Project</a>
-          `;
-          container.appendChild(div);
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-gray-900 via-gray-900 to-blue-900">
+            <div class="text-center max-w-4xl mx-auto">
+                <!-- Main Headline -->
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 animate-fade-in">
+                    AHNAF
+                </h1>
+                
+                <!-- Sub-headline -->
+                <p class="text-xl md:text-2xl text-blue-400 mb-6 animate-fade-in" style="animation-delay: 0.2s;">
+                    Fullstack Developer | Web & Mobile Application Specialist
+                </p>
+                
+                <!-- Value Proposition -->
+                <p class="mt-4 max-w-2xl mx-auto text-lg leading-relaxed animate-fade-in" style="animation-delay: 0.4s;">
+                    Lulusan D4 Teknik Informatika (IPK 3.93) dengan spesialisasi Full Stack Development. 
+                    Saya mengubah ide menjadi solusi digital end-to-end menggunakan Laravel, Kotlin Native, dan Flutter. 
+                    Dengan pengalaman sebagai Mentor Bangkit Academy, saya membantu menciptakan generasi developer masa depan.
+                </p>
+                
+                <!-- Call to Action Buttons -->
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style="animation-delay: 0.6s;">
+                    <a href="#projects" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold transition-all transform hover:scale-105">
+                        Lihat Proyek Saya
+                    </a>
+                    <a href="#contact" class="border border-white hover:bg-white hover:text-gray-900 px-8 py-3 rounded-lg font-semibold transition-all transform hover:scale-105">
+                        Hubungi Saya
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 px-6 bg-gray-800">
+            <div class="container mx-auto max-w-6xl">
+                <div class="grid md:grid-cols-2 gap-10 items-center">
+                    <!-- Photo Column -->
+                    <div class="animate-on-scroll">
+                        <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg p-1">
+                            <div class="bg-gray-700 rounded-lg h-96 flex items-center justify-center">
+                                <div class="text-center">
+                                    <svg class="w-24 h-24 mx-auto text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <p class="text-gray-400">Foto Profesional</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Content Column -->
+                    <div class="animate-on-scroll">
+                        <h2 class="text-4xl font-bold text-white mb-6">Tentang Saya</h2>
+                        
+                        <p class="text-lg leading-relaxed mb-6">
+                            Saya adalah seorang Fullstack Developer dengan passion mendalam di bidang teknologi. 
+                            Dengan latar belakang pendidikan D4 Teknik Informatika dan IPK 3.93, saya memiliki 
+                            fondasi kuat dalam pengembangan software modern.
+                        </p>
+                        
+                        <h3 class="text-2xl font-semibold text-blue-400 mb-4">Filosofi Kerja</h3>
+                        
+                        <p class="text-lg leading-relaxed mb-6">
+                            Saya berperan sebagai <strong class="text-white">Problem Solver</strong> yang mengutamakan 
+                            solusi end-to-end. Pengalaman sebagai <strong class="text-blue-400">Mentor Bangkit Academy</strong> 
+                            telah mengasah kemampuan saya dalam mentransfer knowledge dan membangun tim yang solid. 
+                            Saya percaya bahwa teknologi terbaik adalah yang dapat menyelesaikan masalah nyata dengan 
+                            implementasi yang elegan dan efisien.
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-3">
+                            <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">Problem Solver</span>
+                            <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm">Mentor Bangkit Academy</span>
+                            <span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm">Full Stack Specialist</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-20 px-6 bg-gray-900">
+            <div class="container mx-auto max-w-6xl">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">Proyek Unggulan</h2>
+                    <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                        Beberapa project yang menunjukkan keahlian saya dalam mengembangkan solusi end-to-end
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Project 1: Gassin -->
+                    <article class="bg-gray-800 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll">
+                        <div class="bg-gradient-to-br from-green-500 to-blue-600 h-48 flex items-center justify-center">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 mx-auto text-white mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                                </svg>
+                                <p class="text-white font-semibold">Mockup Aplikasi Gassin</p>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-3">Studi Kasus: Aplikasi Mobile Gassin</h3>
+                            <p class="text-gray-300 mb-4">
+                                Solusi end-to-end untuk aplikasi mobile dengan arsitektur Kotlin Native dan Laravel API. 
+                                Mengimplementasikan best practices dalam mobile development dan backend integration.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-blue-400">Kotlin</span>
+                                <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-red-400">Laravel</span>
+                                <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-green-400">REST API</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <!-- Project 2: Cloud HES Avairra -->
+                    <article class="bg-gray-800 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll">
+                        <div class="bg-gradient-to-br from-purple-500 to-pink-600 h-48 flex items-center justify-center">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 mx-auto text-white mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <p class="text-white font-semibold">Dashboard Cloud HES</p>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-3">Studi Kasus: Dashboard Real-time Cloud HES</h3>
+                            <p class="text-gray-300 mb-4">
+                                Dashboard monitoring real-time dengan tantangan implementasi socket TCP/IP. 
+                                Mengoptimalkan performa dan user experience untuk data streaming berkelanjutan.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-red-400">Laravel</span>
+                                <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-yellow-400">JavaScript</span>
+                                <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-green-400">TCP/IP</span>
+                                <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-purple-400">Bootstrap</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <!-- Project 3: Dikantin -->
+                    <article class="bg-gray-800 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll md:col-span-2">
+                        <div class="md:flex">
+                            <div class="bg-gradient-to-br from-orange-500 to-red-600 h-48 md:h-auto md:w-1/3 flex items-center justify-center">
+                                <div class="text-center">
+                                    <svg class="w-16 h-16 mx-auto text-white mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <p class="text-white font-semibold">UI/UX Redesign Dikantin</p>
+                                </div>
+                            </div>
+                            <div class="p-6 md:w-2/3">
+                                <h3 class="text-xl font-semibold text-white mb-3">Studi Kasus: Redesain UI/UX & Pengembangan Dikantin</h3>
+                                <p class="text-gray-300 mb-4">
+                                    Inisiatif redesain komprehensif menggunakan Figma untuk meningkatkan user experience, 
+                                    dilanjutkan dengan pengembangan aplikasi menggunakan Flutter. Fokus pada user-centered design 
+                                    dan implementasi yang responsif across platforms.
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-blue-400">Flutter</span>
+                                    <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-pink-400">Figma</span>
+                                    <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-purple-400">UI/UX</span>
+                                    <span class="bg-gray-700 rounded-full px-3 py-1 text-sm text-orange-400">Firebase</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-20 px-6 bg-gray-800">
+            <div class="container mx-auto max-w-6xl">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">Keahlian & Teknologi</h2>
+                    <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                        Stack teknologi dan tools yang saya kuasai untuk mengembangkan solusi end-to-end
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Mobile Development -->
+                    <div class="bg-gray-900 rounded-lg p-6 hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-500 rounded-lg p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M7 2a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V4a2 2 0 00-2-2H7zm3 14a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white">Mobile Development</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="inline-block bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Kotlin Native</span>
+                            <span class="inline-block bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Flutter</span>
+                            <span class="inline-block bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Dart</span>
+                            <span class="inline-block bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Android SDK</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Backend & Frontend -->
+                    <div class="bg-gray-900 rounded-lg p-6 hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-500 rounded-lg p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white">Backend & Frontend</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Laravel</span>
+                            <span class="inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">PHP</span>
+                            <span class="inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">JavaScript</span>
+                            <span class="inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Bootstrap</span>
+                            <span class="inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">REST API</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Database -->
+                    <div class="bg-gray-900 rounded-lg p-6 hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-500 rounded-lg p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z"></path>
+                                    <path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z"></path>
+                                    <path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3 7 1.343 7 3z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white">Database</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="inline-block bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">MySQL</span>
+                            <span class="inline-block bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">SQLite</span>
+                            <span class="inline-block bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Firebase</span>
+                            <span class="inline-block bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Eloquent ORM</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Architecture & Principles -->
+                    <div class="bg-gray-900 rounded-lg p-6 hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-orange-500 rounded-lg p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white">Arsitektur & Prinsip</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="inline-block bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">MVC Pattern</span>
+                            <span class="inline-block bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Clean Architecture</span>
+                            <span class="inline-block bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">SOLID Principles</span>
+                            <span class="inline-block bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">TCP/IP Socket</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Tools & Platform -->
+                    <div class="bg-gray-900 rounded-lg p-6 hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-red-500 rounded-lg p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white">Tools & Platform</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="inline-block bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Git & GitHub</span>
+                            <span class="inline-block bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Figma</span>
+                            <span class="inline-block bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Android Studio</span>
+                            <span class="inline-block bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">VS Code</span>
+                        </div>
+                    </div>
+                    
+                    <!-- UI/UX Design -->
+                    <div class="bg-gray-900 rounded-lg p-6 hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-pink-500 rounded-lg p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white">UI/UX Design</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="inline-block bg-pink-500/20 text-pink-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">User Research</span>
+                            <span class="inline-block bg-pink-500/20 text-pink-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Wireframing</span>
+                            <span class="inline-block bg-pink-500/20 text-pink-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Prototyping</span>
+                            <span class="inline-block bg-pink-500/20 text-pink-400 px-3 py-1 rounded-full text-sm mr-2 mb-2">Design Systems</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Journey Timeline Section -->
+        <section id="journey" class="py-20 px-6 bg-gray-900">
+            <div class="container mx-auto max-w-4xl">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">Perjalanan & Kredibilitas</h2>
+                    <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                        Milestone penting dalam karir pengembangan software saya
+                    </p>
+                </div>
+                
+                <!-- Timeline -->
+                <div class="relative">
+                    <!-- Central Timeline Line -->
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-blue-500"></div>
+                    
+                    <!-- Timeline Items -->
+                    <div class="space-y-12">
+                        <!-- Item 1: Current Position -->
+                        <div class="relative animate-on-scroll">
+                            <div class="flex items-center">
+                                <div class="flex-1 pr-8 text-right">
+                                    <div class="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors">
+                                        <span class="text-blue-400 font-semibold">2023 - Sekarang</span>
+                                        <h3 class="text-xl font-bold text-white mt-2">Freelance Software Engineer</h3>
+                                        <ul class="text-gray-300 mt-3 space-y-1">
+                                            <li>• Mengembangkan aplikasi mobile dan web end-to-end</li>
+                                            <li>• Spesialisasi Laravel, Kotlin Native, dan Flutter</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="relative z-10 w-4 h-4 bg-blue-500 rounded-full border-4 border-gray-900"></div>
+                                <div class="flex-1 pl-8"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 2: Bangkit Academy -->
+                        <div class="relative animate-on-scroll">
+                            <div class="flex items-center">
+                                <div class="flex-1 pr-8"></div>
+                                <div class="relative z-10 w-4 h-4 bg-green-500 rounded-full border-4 border-gray-900"></div>
+                                <div class="flex-1 pl-8">
+                                    <div class="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors">
+                                        <span class="text-green-400 font-semibold">2023</span>
+                                        <h3 class="text-xl font-bold text-white mt-2">Mentor Bangkit Academy by Google, Tokopedia, Gojek & Traveloka</h3>
+                                        <ul class="text-gray-300 mt-3 space-y-1">
+                                            <li>• Mentoring 50+ developer muda dalam Mobile Development</li>
+                                            <li>• Membantu peserta menguasai Android development dengan Kotlin</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 3: Education -->
+                        <div class="relative animate-on-scroll">
+                            <div class="flex items-center">
+                                <div class="flex-1 pr-8 text-right">
+                                    <div class="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors">
+                                        <span class="text-purple-400 font-semibold">2020 - 2024</span>
+                                        <h3 class="text-xl font-bold text-white mt-2">D4 Teknik Informatika</h3>
+                                        <ul class="text-gray-300 mt-3 space-y-1">
+                                            <li>• Lulus dengan IPK 3.93 (Cum Laude)</li>
+                                            <li>• Fokus pada Software Engineering dan Mobile Development</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="relative z-10 w-4 h-4 bg-purple-500 rounded-full border-4 border-gray-900"></div>
+                                <div class="flex-1 pl-8"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item 4: Major Projects -->
+                        <div class="relative animate-on-scroll">
+                            <div class="flex items-center">
+                                <div class="flex-1 pr-8"></div>
+                                <div class="relative z-10 w-4 h-4 bg-orange-500 rounded-full border-4 border-gray-900"></div>
+                                <div class="flex-1 pl-8">
+                                    <div class="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors">
+                                        <span class="text-orange-400 font-semibold">2022 - 2024</span>
+                                        <h3 class="text-xl font-bold text-white mt-2">Major Project Development</h3>
+                                        <ul class="text-gray-300 mt-3 space-y-1">
+                                            <li>• Gassin: Mobile app dengan Kotlin Native + Laravel API</li>
+                                            <li>• Cloud HES: Real-time dashboard dengan TCP/IP integration</li>
+                                            <li>• Dikantin: UI/UX redesign & Flutter development</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 px-6 bg-gray-800">
+            <div class="container mx-auto max-w-4xl text-center">
+                <div class="animate-on-scroll">
+                    <h2 class="text-4xl font-bold text-white mb-6">Mari Terhubung</h2>
+                    
+                    <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
+                        Saya selalu terbuka untuk diskusi mengenai proyek baru, peluang kolaborasi, 
+                        atau sekadar bertukar pikiran tentang teknologi dan pengembangan software. 
+                        Mari ciptakan solusi digital yang luar biasa bersama!
+                    </p>
+                    
+                    <!-- Email -->
+                    <div class="mb-8">
+                        <a href="mailto:ahnaf@example.com" class="inline-flex items-center text-blue-400 hover:text-blue-300 text-lg font-semibold transition-colors">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                            </svg>
+                            ahnaf@example.com
+                        </a>
+                    </div>
+                    
+                    <!-- Social Media Icons -->
+                    <div class="flex justify-center space-x-6">
+                        <!-- LinkedIn -->
+                        <a href="https://linkedin.com/in/ahnaf" target="_blank" rel="noopener noreferrer" class="group">
+                            <div class="bg-gray-700 hover:bg-blue-600 p-3 rounded-full transition-all duration-300 transform group-hover:scale-110">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                            </div>
+                        </a>
+                        
+                        <!-- GitHub -->
+                        <a href="https://github.com/ahnafbwd" target="_blank" rel="noopener noreferrer" class="group">
+                            <div class="bg-gray-700 hover:bg-gray-600 p-3 rounded-full transition-all duration-300 transform group-hover:scale-110">
+                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-8 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-400 mb-4 md:mb-0">
+                    <p>&copy; 2024 Ahnaf. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#about" class="text-gray-400 hover:text-blue-400 transition-colors">Tentang</a>
+                    <a href="#projects" class="text-gray-400 hover:text-blue-400 transition-colors">Proyek</a>
+                    <a href="#contact" class="text-gray-400 hover:text-blue-400 transition-colors">Kontak</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Smooth scrolling for navigation links
+            const navLinks = document.querySelectorAll('a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Close mobile menu if open
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Active link highlighting with Intersection Observer
+            const sections = document.querySelectorAll('section[id]');
+            const navLinksAll = document.querySelectorAll('.nav-link');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '-20% 0px -60% 0px',
+                threshold: 0
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Remove active class from all nav links
+                        navLinksAll.forEach(link => {
+                            link.classList.remove('text-blue-400');
+                        });
+                        
+                        // Add active class to current section nav link
+                        const activeLink = document.querySelector(`a[href="#${entry.target.id}"]`);
+                        if (activeLink && activeLink.classList.contains('nav-link')) {
+                            activeLink.classList.add('text-blue-400');
+                        }
+                    }
+                });
+            }, observerOptions);
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Scroll animations with Intersection Observer
+            const animateElements = document.querySelectorAll('.animate-on-scroll');
+            
+            const animateObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                        animateObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px 0px -10% 0px',
+                threshold: 0.1
+            });
+            
+            animateElements.forEach(element => {
+                animateObserver.observe(element);
+            });
+            
+            // Header background opacity on scroll
+            const header = document.getElementById('header');
+            let lastScrollY = window.scrollY;
+            
+            window.addEventListener('scroll', function() {
+                const currentScrollY = window.scrollY;
+                
+                if (currentScrollY > 100) {
+                    header.style.backgroundColor = 'rgba(17, 24, 39, 0.95)';
+                } else {
+                    header.style.backgroundColor = 'rgba(17, 24, 39, 0.8)';
+                }
+                
+                lastScrollY = currentScrollY;
+            });
         });
-      } catch (error) {
-        console.error("Gagal memuat projects.json", error);
-      }
-    }
-
-    loadProjects();
-  </script>
+    </script>
 </body>
 </html>
