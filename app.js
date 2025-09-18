@@ -10,17 +10,17 @@ const EMAILJS_CONFIG = {
 // Project Data Loading
 async function loadProjects() {
     try {
-        console.log('Fetching projects from API...');
-        const response = await fetch('https://ahnafbwd.github.io/latihan-api/projects.json');
+        console.log('Fetching projects from local file...');
+        const response = await fetch('./projects.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const text = await response.text();
-        console.log('Raw API response:', text.substring(0, 200) + '...');
+        console.log('Raw local response:', text.substring(0, 200) + '...');
         
         const data = JSON.parse(text);
-        console.log('Projects loaded successfully from API:', data);
+        console.log('Projects loaded successfully from local file:', data);
         
         // Validasi struktur data
         if (!data.projects || !Array.isArray(data.projects)) {
@@ -179,6 +179,9 @@ function generateTechTags(technologies) {
 
 // Function to generate project card HTML
 function generateProjectCard(project, index) {
+    // Debug log for image path
+    console.log(`Project ${project.title}: image path = ${project.image}`);
+    
     const gradients = [
         'from-green-500 to-blue-600',
         'from-purple-500 to-pink-600',
@@ -197,59 +200,93 @@ function generateProjectCard(project, index) {
         <article class="bg-gray-800 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-300 animate-on-scroll ${isWideCard ? 'md:col-span-2' : ''}">
             ${isWideCard ? `
                 <div class="md:flex">
-                    <div class="bg-gradient-to-br ${gradient} h-48 md:h-auto md:w-1/3 flex items-center justify-center">
-                        <div class="text-center">
-                            ${project.image ? `<img src="${project.image}" alt="${project.title}" class="w-16 h-16 mx-auto mb-2 rounded-lg object-cover">` : 
-                            `<svg class="w-16 h-16 mx-auto text-white mb-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
-                            </svg>`}
-                            <p class="text-white font-semibold">${project.title}</p>
+                    <!-- Wide Card Image Section -->
+                    <div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden">
+                        ${project.image && project.image.trim() !== '' ? `
+                            <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover" onload="console.log('Image loaded: ${project.image}')" onerror="console.error('Failed to load image: ${project.image}')">
+                            <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4">
+                                <span class="bg-${project.category === 'mobile' ? 'blue' : project.category === 'web' ? 'green' : 'purple'}-500/90 text-white px-3 py-1 rounded-full text-sm font-medium">${project.categoryLabel}</span>
+                            </div>
+                        ` : `
+                            <div class="bg-gradient-to-br ${gradient} h-full flex items-center justify-center">
+                                <div class="text-center">
+                                    <svg class="w-20 h-20 mx-auto text-white mb-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <p class="text-white font-semibold text-lg">${project.title}</p>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                    <!-- Wide Card Content Section -->
+                    <div class="p-6 md:w-1/2">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-gray-400 text-sm">${project.year}</span>
+                            <span class="text-gray-500">•</span>
+                            <span class="text-gray-400 text-sm">${project.client}</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">${project.title}</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed">${project.description}</p>
+                        ${project.features ? `
+                            <ul class="text-sm text-gray-400 mb-4 space-y-1">
+                                ${project.features.slice(0, 3).map(feature => `<li class="flex items-start"><span class="text-blue-400 mr-2">•</span>${feature}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${generateTechTags(project.technologies)}
+                        </div>
+                        <div class="flex gap-3">
+                            ${project.link && project.link !== '#' ? `<a href="${project.link}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Live Demo →</a>` : ''}
+                            ${project.github && project.github !== '#' ? `<a href="${project.github}" target="_blank" class="border border-gray-600 hover:border-white text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">GitHub →</a>` : ''}
                         </div>
                     </div>
-                    <div class="p-6 md:w-2/3">
+                </div>
+            ` : `
+                <!-- Regular Card Image Section -->
+                <div class="relative h-48 overflow-hidden">
+                    ${project.image && project.image.trim() !== '' ? `
+                        <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover" onload="console.log('Regular card image loaded: ${project.image}')" onerror="console.error('Failed to load regular card image: ${project.image}')">
+                        <div class="absolute inset-0 bg-black/30"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-${project.category === 'mobile' ? 'blue' : project.category === 'web' ? 'green' : 'purple'}-500/90 text-white px-3 py-1 rounded-full text-sm font-medium">${project.categoryLabel}</span>
+                        </div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-xl font-bold text-white mb-1">${project.title}</h3>
+                            <p class="text-gray-200 text-sm">${project.year}</p>
+                        </div>
+                    ` : `
+                        <div class="bg-gradient-to-br ${gradient} h-full flex items-center justify-center">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 mx-auto text-white mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                                </svg>
+                                <p class="text-white font-semibold">${project.title}</p>
+                            </div>
+                        </div>
+                    `}
+                </div>
+                <!-- Regular Card Content Section -->
+                <div class="p-6">
+                    ${!project.image ? `
                         <div class="flex items-center gap-2 mb-3">
                             <span class="bg-${project.category === 'mobile' ? 'blue' : project.category === 'web' ? 'green' : 'purple'}-500/20 text-${project.category === 'mobile' ? 'blue' : project.category === 'web' ? 'green' : 'purple'}-400 px-2 py-1 rounded-full text-xs font-medium">${project.categoryLabel}</span>
                             <span class="text-gray-400 text-sm">${project.year}</span>
                         </div>
                         <h3 class="text-xl font-semibold text-white mb-3">${project.title}</h3>
-                        <p class="text-gray-300 mb-4">${project.description}</p>
-                        ${project.features ? `
-                            <ul class="text-sm text-gray-400 mb-4 space-y-1">
-                                ${project.features.slice(0, 3).map(feature => `<li>• ${feature}</li>`).join('')}
-                            </ul>
-                        ` : ''}
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            ${generateTechTags(project.technologies)}
-                        </div>
-                        <div class="flex gap-3">
-                            ${project.link && project.link !== '#' ? `<a href="${project.link}" target="_blank" class="text-blue-400 hover:text-blue-300 text-sm font-medium">Live Demo →</a>` : ''}
-                            ${project.github && project.github !== '#' ? `<a href="${project.github}" target="_blank" class="text-gray-400 hover:text-white text-sm font-medium">GitHub →</a>` : ''}
-                        </div>
-                    </div>
-                </div>
-            ` : `
-                <div class="bg-gradient-to-br ${gradient} h-48 flex items-center justify-center">
-                    <div class="text-center">
-                        ${project.image ? `<img src="${project.image}" alt="${project.title}" class="w-16 h-16 mx-auto mb-2 rounded-lg object-cover">` : 
-                        `<svg class="w-16 h-16 mx-auto text-white mb-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
-                        </svg>`}
-                        <p class="text-white font-semibold">${project.title}</p>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="bg-${project.category === 'mobile' ? 'blue' : project.category === 'web' ? 'green' : 'purple'}-500/20 text-${project.category === 'mobile' ? 'blue' : project.category === 'web' ? 'green' : 'purple'}-400 px-2 py-1 rounded-full text-xs font-medium">${project.categoryLabel}</span>
-                        <span class="text-gray-400 text-sm">${project.year}</span>
-                    </div>
-                    <h3 class="text-xl font-semibold text-white mb-3">${project.title}</h3>
-                    <p class="text-gray-300 mb-4">${project.description}</p>
+                    ` : ''}
+                    <p class="text-gray-300 mb-4 ${project.image ? 'text-sm' : ''}">${project.description}</p>
+                    ${project.features ? `
+                        <ul class="text-sm text-gray-400 mb-4 space-y-1">
+                            ${project.features.slice(0, 2).map(feature => `<li class="flex items-start"><span class="text-blue-400 mr-2">•</span>${feature}</li>`).join('')}
+                        </ul>
+                    ` : ''}
                     <div class="flex flex-wrap gap-2 mb-4">
                         ${generateTechTags(project.technologies)}
                     </div>
                     <div class="flex gap-3">
-                        ${project.link && project.link !== '#' ? `<a href="${project.link}" target="_blank" class="text-blue-400 hover:text-blue-300 text-sm font-medium">Live Demo →</a>` : ''}
-                        ${project.github && project.github !== '#' ? `<a href="${project.github}" target="_blank" class="text-gray-400 hover:text-white text-sm font-medium">GitHub →</a>` : ''}
+                        ${project.link && project.link !== '#' ? `<a href="${project.link}" target="_blank" class="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors">Live Demo →</a>` : ''}
+                        ${project.github && project.github !== '#' ? `<a href="${project.github}" target="_blank" class="text-gray-400 hover:text-white text-sm font-medium transition-colors">GitHub →</a>` : ''}
                     </div>
                 </div>
             `}
